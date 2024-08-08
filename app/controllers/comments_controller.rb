@@ -1,9 +1,10 @@
 class CommentsController < ApplicationController
+  before_action :set_post, only: %i[ index show new edit create update destroy ]
   before_action :set_comment, only: %i[ show edit update destroy ]
 
   # GET /comments or /comments.json
   def index
-    @comments = Comment.all
+    @comments = @post.comments
   end
 
   # GET /comments/1 or /comments/1.json
@@ -12,7 +13,7 @@ class CommentsController < ApplicationController
 
   # GET /comments/new
   def new
-    @comment = Comment.new
+    @comment = @post.comments.build
   end
 
   # GET /comments/1/edit
@@ -21,7 +22,7 @@ class CommentsController < ApplicationController
 
   # POST /comments or /comments.json
   def create
-    @comment = Comment.new(comment_params)
+    @comment = @post.comments.build(comment_params)
 
     respond_to do |format|
       if @comment.save
@@ -58,13 +59,18 @@ class CommentsController < ApplicationController
   end
 
   private
+
+    def set_post
+      @post = Post.find(params[:post_id])
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_comment
-      @comment = Comment.find(params[:id])
+      @comment = @post.comments.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def comment_params
-      params.require(:comment).permit(:post_id, :user_id, :body)
+      params.require(:comment).permit(:body).merge(user_id: current_user.id)
     end
 end
