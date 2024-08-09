@@ -1,4 +1,4 @@
-<h1>Posts</h1>
+<h1 class="text-black-900">Posts</h1>
 
 <div id="posts">
   <% @posts.each do |post| %>
@@ -9,4 +9,4 @@
   <% end %>
 </div>
 
-<%= link_to "New post", new_post_path %>
+<%= link_to "New post", new_post_path, class: 'text-green-700 hover:underline' %>
